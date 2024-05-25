@@ -1,0 +1,14 @@
+{
+  index: 0,
+  message: {
+    role: 'assistant',
+    content: 'Question:"Which sentence uses the correct form of the be-verb?"\n' +
+      '                        1)"The system message helps set the behavior of the assistant."\n' +
+      `                        2)"In the example above, the user’s final question of 'Where was it played?' only make sense."\n` +
+      '                        3)"Including conversation history is importance when user instructions refer to prior messages."\n' +
+      '                        4)"Because the models have no memory of past requests, all relevancy information must be supplied."\n' +
+      '                Answer:"1"'
+  },
+  logprobs: null,
+  finish_reason: 'stop'
+}
