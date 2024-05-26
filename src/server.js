@@ -1,32 +1,35 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const Database = require('better-sqlite3');
+import express from 'express';
+import path from 'path';
+import bodyParser from 'body-parser';
+import {insert} from './db_init.js';
+
 const app = express();
 const port = 3000;
 
-const db = new Database('database/quiz.db');
-
-db.exec(`
-    CREATE TABLE IF NOT EXISTS results (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        date TEXT NOT NULL,
-        result TEXT NOT NULL
-    )
-`);
-
 app.use(bodyParser.json());
-app.use(express.static('public'));
 
-app.post('/submit', (req, res) => {
-    const { result } = req.body;
-    const date = new Date().toISOString();
+app.post('/insert', (req, res) => {
+    const data = {
+        $date: req.body.date,
+        $result: req.body.result
+    };
 
-    const stmt = db.prepare('INSERT INTO results (date, result) VALUES (?, ?)');
-    stmt.run(date, result);
+    insert.run(data, function(err) {
+        if (err) {
+            console.error(err.message);
+            res.status(500).send('Error inserting data');
+        } else {
+            console.log(`A row has been inserted with rowid ${this.lastID}`);
+            res.send('Data inserted successfully');
+        }
+    });
+});
 
-    res.sendStatus(200);
+// Serve the index.html file
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname,'..', 'index.html'));
 });
 
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running at http://localhost:${port}/`);
 });

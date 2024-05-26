@@ -142,11 +142,14 @@ function checkAnswer(data){
 
     const userAnswer = parseInt(selectedOption.value)+1;
     const correctAnswer = parseInt(data.answer);
+    let result = "";
 
     if (userAnswer === correctAnswer) {
+        result = "O";
         resultElement.textContent = 'Correct!';
         resultElement.style.color = 'green';
     } else {
+        result = "X";
         resultElement.textContent = 'Incorrect. Please try again.';
         resultElement.style.color = 'red';
     }
@@ -158,3 +161,27 @@ document.addEventListener('DOMContentLoaded', (event) => {
       main();
     });
   });
+
+document.getElementById('insertButton').addEventListener('click', () => {
+    const data = {
+        date: '2024-05-25',
+        result: 'Passed'
+    };
+
+    fetch('/insert', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.text())
+    .then(message => {
+        console.log(message);
+        alert(message);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error inserting data');
+    });
+});
