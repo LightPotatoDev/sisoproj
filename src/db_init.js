@@ -1,5 +1,5 @@
-import sqlite3 from 'sqlite3';
-const p = 'C:/Users/light/OneDrive/바탕 화면/sys/project/db/quiz.db'
+const sqlite3 = require('sqlite3');
+const p = 'C:/Users/light/OneDrive/바탕 화면/sys/project/db/quiz.db';
 
 const db = new sqlite3.Database(p, sqlite3.OPEN_READWRITE, (err) => {
     if (err){
@@ -16,7 +16,7 @@ const insert = db.prepare(
     "INSERT INTO quiz_result (date, result) VALUES ($date, $result)"
 );
 
-export {
+module.exports = {
     db,
     insert
 }

@@ -1,0 +1,8 @@
+[chatGPT api integration problem]
+used webpack
+
+[database GET problem - __webpack_hmr not found]
+duplicate server thing, solved by disabling live server and using node server.js instead
+
+[database CORS problem]
+webpack dev server proxy configuration

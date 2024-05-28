@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+const OpenAI = require('openai');
 
 const openai = new OpenAI({
     apiKey:"sk-proj-ld5NpvILyGuHU0ws4ab3T3BlbkFJMDjpR3PhR1Nwkewh334c",
@@ -40,26 +40,6 @@ async function generate_response(sys, user) {
     return new Promise((resolve) => {
         setTimeout(() => {
             const result = completion.choices[0].message.content;
-            resolve(result);
-        },1000);
-    });
-}
-
-async function parse(text){
-
-    let questionMatch = String(text).match(/Question:"?\s*([^"]+)"?/);
-    let answerMatch = String(text).match(/Answer:"?\s*([^"]+)"?/);
-    let choicesMatch = [...String(text).matchAll(/\d+\)\s*"?([^"]+)"?/g)];
-
-    let question = questionMatch ? questionMatch[1] : null;
-    let choices = choicesMatch.map(match => match[1]);
-    let answer = answerMatch ? answerMatch[1] : null;
-
-    let parse_group =  {question,choices,answer};
-
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const result = parse_group;
             resolve(result);
         },1000);
     });
@@ -163,7 +143,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   });
 
 document.getElementById('insertButton').addEventListener('click', () => {
-    const data = {
+    const quiz_data = {
         date: '2024-05-25',
         result: 'Passed'
     };
@@ -173,13 +153,9 @@ document.getElementById('insertButton').addEventListener('click', () => {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(quiz_data)
     })
     .then(response => response.text())
-    .then(message => {
-        console.log(message);
-        alert(message);
-    })
     .catch(error => {
         console.error('Error:', error);
         alert('Error inserting data');

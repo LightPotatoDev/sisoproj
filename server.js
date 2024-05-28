@@ -1,21 +1,36 @@
-import express from 'express';
-import path from 'path';
-import bodyParser from 'body-parser';
-import webpack from 'webpack';
-import webpackHotMiddleware from 'webpack-hot-middleware';
-import webpackDevMiddleware from 'webpack-dev-middleware';
-import webpackConfig from './webpack.config.cjs';
-import {insert} from './src/db_init.js';
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const sqlite3 = require('sqlite3').verbose();
+const cors = require('cors');
 
 const app = express();
 const port = 3000;
-const complier = webpack(webpackConfig);
 
+app.use(cors());
 app.use(bodyParser.json());
-app.use(webpackDevMiddleware(complier, {
-    publicPath: webpackConfig.output.publicPath
-}));
-app.use(webpackHotMiddleware(complier));
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// Serve the index.html file
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+const db_path = 'C:/Users/light/OneDrive/바탕 화면/sys/project/db/quiz.db';
+const db = new sqlite3.Database(db_path, sqlite3.OPEN_READWRITE, (err) => {
+    if (err){
+        console.error(err.message);
+    }
+    console.log('connected to databasd');
+})
+
+db.serialize(() => {
+    db.run("CREATE TABLE IF NOT EXISTS quiz_result (id INTEGER PRIMARY KEY, date TEXT, result TEXT)");
+}); 
+
+const insert = db.prepare(
+    "INSERT INTO quiz_result (date, result) VALUES ($date, $result)"
+);
 
 app.post('/insert', (req, res) => {
     const data = {
@@ -26,17 +41,13 @@ app.post('/insert', (req, res) => {
     insert.run(data, function(err) {
         if (err) {
             console.error(err.message);
+            console.log('A')
             res.status(500).send('Error inserting data');
         } else {
             console.log(`A row has been inserted with rowid ${this.lastID}`);
-            res.send('Data inserted successfully');
+            res.status(200).send('Data inserted successfully');
         }
     });
-});
-
-// Serve the index.html file
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(port, () => {
