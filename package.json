@@ -9,13 +9,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/plugin-transform-strict-mode": "^7.24.6",
     "babel": "^6.23.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
+    "css-loader": "^7.1.2",
+    "ejs": "^3.1.10",
+    "ejs-loader": "^0.5.0",
     "express": "^4.19.2",
+    "html-webpack-plugin": "^5.6.0",
     "openai": "^4.47.1",
     "sql.js": "^1.10.3",
     "sqlite3": "^5.1.7",
+    "style-loader": "^4.0.0",
     "webpack-hot-server": "^0.6.1"
   },
   "devDependencies": {

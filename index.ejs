@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Page Title</title>
+<link rel="stylesheet" href="./style/mystyle.css">
+</head>
+
+<body>
+<h1>Quiz Generator</h1>
+<form>
+    <textarea name="Text1" cols="100" rows="5" id = "context"></textarea><br>
+    <input type="button" id="test_button" value="do stuff">
+    <input type="reset" value="Reset">
+</form>
+<p id="output"></p>
+
+<div id="quiz-container"></div>
+<input type="button" id="review_results" value="Review">
+<table id="result_table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Content</th>
+        <th>Created At</th>
+    </tr>
+</thead>
+<tbody>
+    <% entries.forEach(entry => { %>
+        <tr>
+            <td><%= entry.id %></td>
+            <td><%= entry.date %></td>
+            <td><%= entry.result %></td>
+        </tr>
+    <% }) %>
+</tbody></table>
+
+<script src = "./dist/bundle.js"></script>
+
+</body>
+
+</html>

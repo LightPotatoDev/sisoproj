@@ -11,13 +11,17 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'dist')));
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname));
+
 // Serve the index.html file
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'index.ejs'));
+    res.render('index', {entries:[]});
 });
 
 const db_path = 'C:/Users/light/OneDrive/바탕 화면/sys/project/db/quiz.db';
-const db = new sqlite3.Database(db_path, sqlite3.OPEN_READWRITE, (err) => {
+const db = new sqlite3.Database(db_path, (err) => {
     if (err){
         console.error(err.message);
     }
@@ -49,6 +53,26 @@ app.post('/insert', (req, res) => {
         }
     });
 });
+
+app.get('/review', (req,res) => {
+    const query = `
+    SELECT * FROM quiz_result
+    ORDER BY id DESC
+    LIMIT 10;
+    `;
+
+    db.all(query, [], (err, rows) => {
+    if (err) {
+        throw err;
+    }
+    
+    // Print out each row
+    res.render('index', { entries: rows });
+    rows.forEach((row) => {
+        console.log(row);
+    });
+});
+})
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}/`);

@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: "development",
@@ -19,14 +20,32 @@ module.exports = {
             use: {
                 loader: 'babel-loader',
                 options: {
-                    presets: ['@babel/preset-env']
+                    presets: [
+                      '@babel/preset-env',{ modules: false }
+                    ],
+                    plugins: [
+                      ['@babel/plugin-transform-strict-mode', { strictMode: true }] // Enable strict mode to avoid 'with' statements
+                    ]
                 }
             }
-        }
+        },
+        {
+          test: /\.css$/i,
+          use: ['style-loader', 'css-loader'],
+        },
+        {
+          test: /\.ejs$/,
+          use: ['ejs-loader'],
+       },
     ]
 },
 plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new HtmlWebpackPlugin({
+        template: './index.ejs',
+        filename: 'index.html',
+        inject: 'body',
+    }),
 ],
 devtool: 'source-map',
 devServer:{
@@ -37,7 +56,7 @@ devServer:{
   port:9000,
   proxy:[
     { 
-      context: ['/insert'],
+      context: ['/insert', '/review'], //used to avoid CORS, put api calls here
       target:  'http://localhost:3000',
     }
   ],

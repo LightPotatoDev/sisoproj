@@ -110,6 +110,18 @@ async function main(){
     await generate_ui(JSON.parse(quiz_obj));
 }
 
+function getDate() {
+    const today = new Date();
+  
+    const year = today.getFullYear(); // 2023
+    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // 06
+    const day = today.getDate().toString().padStart(2, '0'); // 18
+  
+    const dateString = year + '-' + month + '-' + day; // 2023-06-18
+  
+    return dateString;
+  }
+
 function checkAnswer(data){
     const selectedOption = document.querySelector('input[name="choice"]:checked');
     const resultElement = document.getElementById('result');
@@ -133,6 +145,9 @@ function checkAnswer(data){
         resultElement.textContent = 'Incorrect. Please try again.';
         resultElement.style.color = 'red';
     }
+
+    var today = getDate();
+    addToDatabase(today,result);
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -142,10 +157,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
   });
 
-document.getElementById('insertButton').addEventListener('click', () => {
+document.addEventListener('DOMContentLoaded', (event) => {
+    const button = document.getElementById('review_results');
+    button.addEventListener('click', () => {
+        fetchRecentEntries();
+    });
+  });
+
+function addToDatabase(d,r){
     const quiz_data = {
-        date: '2024-05-25',
-        result: 'Passed'
+        date: d,
+        result: r
     };
 
     fetch('/insert', {
@@ -160,4 +182,18 @@ document.getElementById('insertButton').addEventListener('click', () => {
         console.error('Error:', error);
         alert('Error inserting data');
     });
-});
+}
+
+function fetchRecentEntries() {
+    fetch('/review', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(response => response.text())
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error getting data');
+    });
+}
