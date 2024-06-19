@@ -1,5 +1,6 @@
 async function generate_system_text(n,grammer_type){
-    const quiz_inst = "You will be given a paragraph, and you should make " + String(n) + " quizzes related to the paragraph in a type of multiple choice question.\n";
+    const quiz_inst = "You will be given a paragraph, and you should make" + String(n) + "english grammer quiz(es) in a type of multiple choice question.\n";
+    const grammer_inst = "The quizzes will be about the usage of be-verbs."; //TODO: add grammer_type variable
     const format_inst = "Give the response as the format given below:\n";
     const format_text = "Question:\"Insert a question here\"\n\
                         1)\"Insert an option here\"\n\
@@ -11,7 +12,7 @@ async function generate_system_text(n,grammer_type){
 
     return new Promise((resolve) => {
         setTimeout(() => {
-            const result = quiz_inst + format_inst + format_text + spec_output;
+            const result = quiz_inst + grammer_inst + format_inst + format_text + spec_output;
             resolve(result);
         }, 1000);
     });
@@ -61,11 +62,6 @@ async function generate_ui(data){
         radio.value = index;
         const label = document.createElement('label');
         label.textContent = choice;
-
-        // Add event listener to label
-        label.addEventListener('click', () => {
-            radio.checked = true; // Check the radio button when label is clicked
-        });
         
         choiceContainer.appendChild(radio);
         choiceContainer.appendChild(label);
@@ -75,14 +71,12 @@ async function generate_ui(data){
     // Create answer element
     const answerElement = document.createElement('p');
     answerElement.textContent = `Answer: ${parseInt(data.answer)}`;
-    answerElement.id = 'answer';
     container.appendChild(answerElement);
 
     // Create submit button
     const submitButton = document.createElement('button');
     submitButton.textContent = 'Submit';
     submitButton.onclick = () => checkAnswer(data);
-    submitButton.classList.add('nice_button')
     container.appendChild(submitButton);
 
     // Create result element
@@ -95,11 +89,6 @@ const TEXT_MIN_LIMIT = 200;
 const TEXT_MAX_LIMIT = 2000;
 
 async function main(){
-    document.getElementById('quiz-container').innerHTML = '';
-    const quiz_cont = document.getElementById('quiz-container');
-    const quiz_loading = document.createElement('p');
-    quiz_loading.textContent = "Generating...";
-    quiz_cont.appendChild(quiz_loading);
     var user_text = document.getElementById('context').value;
     if (user_text.length < TEXT_MIN_LIMIT){
         alert("The text should have at least " + String(TEXT_MIN_LIMIT) + " characters.");
@@ -111,11 +100,8 @@ async function main(){
     }
     var system_text = await generate_system_text(4,'a');
     var quiz_obj = await generate_response(system_text,user_text);
-
-    quiz_cont.removeChild(quiz_loading);
     //var quiz_obj = await parse(response_text);
     await generate_ui(JSON.parse(quiz_obj));
-    
 }
 
 function checkAnswer(data){
@@ -144,7 +130,7 @@ function checkAnswer(data){
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    const button = document.getElementById('quiz_gen_button');
+    const button = document.getElementById('test_button');
     button.addEventListener('click', () => {
       main();
     });

@@ -16,11 +16,12 @@ function generate_system_text(_x, _x2) {
 }
 function _generate_system_text() {
   _generate_system_text = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(n, grammer_type) {
-    var quiz_inst, format_inst, format_text, spec_output;
+    var quiz_inst, grammer_inst, format_inst, format_text, spec_output;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
-          quiz_inst = "You will be given a paragraph, and you should make " + String(n) + " quizzes related to the paragraph in a type of multiple choice question.\n";
+          quiz_inst = "You will be given a paragraph, and you should make" + String(n) + "english grammer quiz(es) in a type of multiple choice question.\n";
+          grammer_inst = "The quizzes will be about the usage of be-verbs."; //TODO: add grammer_type variable
           format_inst = "Give the response as the format given below:\n";
           format_text = "Question:\"Insert a question here\"\n\
                         1)\"Insert an option here\"\n\
@@ -31,11 +32,11 @@ function _generate_system_text() {
           spec_output = "Return the output as JSON - {question:, options:[1), 2), 3), 4)], answer:}";
           return _context.abrupt("return", new Promise(function (resolve) {
             setTimeout(function () {
-              var result = quiz_inst + format_inst + format_text + spec_output;
+              var result = quiz_inst + grammer_inst + format_inst + format_text + spec_output;
               resolve(result);
             }, 1000);
           }));
-        case 5:
+        case 6:
         case "end":
           return _context.stop();
       }
@@ -117,11 +118,6 @@ function _generate_ui() {
             radio.value = index;
             var label = document.createElement('label');
             label.textContent = choice;
-
-            // Add event listener to label
-            label.addEventListener('click', function () {
-              radio.checked = true; // Check the radio button when label is clicked
-            });
             choiceContainer.appendChild(radio);
             choiceContainer.appendChild(label);
             container.appendChild(choiceContainer);
@@ -130,7 +126,6 @@ function _generate_ui() {
           // Create answer element
           answerElement = document.createElement('p');
           answerElement.textContent = "Answer: ".concat(parseInt(data.answer));
-          answerElement.id = 'answer';
           container.appendChild(answerElement);
 
           // Create submit button
@@ -139,14 +134,13 @@ function _generate_ui() {
           submitButton.onclick = function () {
             return checkAnswer(data);
           };
-          submitButton.classList.add('nice_button');
           container.appendChild(submitButton);
 
           // Create result element
           resultElement = document.createElement('p');
           resultElement.id = 'result';
           container.appendChild(resultElement);
-        case 23:
+        case 21:
         case "end":
           return _context3.stop();
       }
@@ -161,43 +155,36 @@ function main() {
 }
 function _main() {
   _main = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-    var quiz_cont, quiz_loading, user_text, system_text, quiz_obj;
+    var user_text, system_text, quiz_obj;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) switch (_context4.prev = _context4.next) {
         case 0:
-          document.getElementById('quiz-container').innerHTML = '';
-          quiz_cont = document.getElementById('quiz-container');
-          quiz_loading = document.createElement('p');
-          quiz_loading.textContent = "Generating...";
-          quiz_cont.appendChild(quiz_loading);
           user_text = document.getElementById('context').value;
           if (!(user_text.length < TEXT_MIN_LIMIT)) {
-            _context4.next = 9;
+            _context4.next = 4;
             break;
           }
           alert("The text should have at least " + String(TEXT_MIN_LIMIT) + " characters.");
           return _context4.abrupt("return");
-        case 9:
+        case 4:
           if (!(user_text.length >= TEXT_MAX_LIMIT)) {
-            _context4.next = 12;
+            _context4.next = 7;
             break;
           }
           alert("The text should have less than " + String(TEXT_MAX_LIMIT) + " characters.");
           return _context4.abrupt("return");
-        case 12:
-          _context4.next = 14;
+        case 7:
+          _context4.next = 9;
           return generate_system_text(4, 'a');
-        case 14:
+        case 9:
           system_text = _context4.sent;
-          _context4.next = 17;
+          _context4.next = 12;
           return generate_response(system_text, user_text);
-        case 17:
+        case 12:
           quiz_obj = _context4.sent;
-          quiz_cont.removeChild(quiz_loading);
-          //var quiz_obj = await parse(response_text);
-          _context4.next = 21;
+          _context4.next = 15;
           return generate_ui(JSON.parse(quiz_obj));
-        case 21:
+        case 15:
         case "end":
           return _context4.stop();
       }
@@ -227,7 +214,7 @@ function checkAnswer(data) {
   }
 }
 document.addEventListener('DOMContentLoaded', function (event) {
-  var button = document.getElementById('quiz_gen_button');
+  var button = document.getElementById('test_button');
   button.addEventListener('click', function () {
     main();
   });
@@ -314,7 +301,11 @@ document.getElementById('insertButton').addEventListener('click', function () {
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
+<<<<<<< HEAD
 /******/ 		__webpack_require__.h = () => ("a729d6f33e0e67d7dcb4")
+=======
+/******/ 		__webpack_require__.h = () => ("0b295d57092dd379ff86")
+>>>>>>> parent of 054910b3 (uh)
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
