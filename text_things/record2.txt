@@ -1,1 +1,2 @@
 .env is used to keep the api key secure
+request to server API -> get the api key

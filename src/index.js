@@ -1,10 +1,3 @@
-/*const OpenAI = require('openai');
-
-const openai = new OpenAI({
-    apiKey:"sk-proj-UXXRPYgNvpioZeo34YqRT3BlbkFJjZpUhSRRvC4OogqHqUsX",
-    dangerouslyAllowBrowser: true 
-});*/
-
 async function generate_system_text(n,grammer_type){
     const quiz_inst = "You will be given a paragraph, and you should make " + String(n) + " quizzes related to the paragraph in a type of multiple choice question.\n";
     const format_inst = "Give the response as the format given below:\n";
