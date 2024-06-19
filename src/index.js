@@ -1,9 +1,9 @@
-const OpenAI = require('openai');
+/*const OpenAI = require('openai');
 
 const openai = new OpenAI({
     apiKey:"sk-proj-UXXRPYgNvpioZeo34YqRT3BlbkFJjZpUhSRRvC4OogqHqUsX",
     dangerouslyAllowBrowser: true 
-});
+});*/
 
 async function generate_system_text(n,grammer_type){
     const quiz_inst = "You will be given a paragraph, and you should make " + String(n) + " quizzes related to the paragraph in a type of multiple choice question.\n";
@@ -25,22 +25,23 @@ async function generate_system_text(n,grammer_type){
 }
 
 async function generate_response(sys, user) {
-    const completion = await openai.chat.completions.create({
-        response_format: {"type": "json_object"},
-        messages: [{ role: "system", content: sys },
-                    {role: "user", content: user},
-                ],
-        model: "gpt-3.5-turbo",
+    const response = await fetch('http://localhost:3000/generate-response', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ sys, user })
     });
 
-    console.log(completion.choices[0]);
-    completion.choices[0].message.content;
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
 
+    const data = await response.json();
     return new Promise((resolve) => {
         setTimeout(() => {
-            const result = completion.choices[0].message.content;
-            resolve(result);
-        },1000);
+            resolve(data.choices[0].message.content);
+        }, 1000);
     });
 }
 

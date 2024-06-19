@@ -14,13 +14,17 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'dist')));
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname));
+
 // Serve the index.html file
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'index.ejs'));
+    res.render('index', {entries:[]});
 });
 
 const db_path = 'C:/Users/light/OneDrive/바탕 화면/sys/project/db/quiz.db';
-const db = new sqlite3.Database(db_path, sqlite3.OPEN_READWRITE, (err) => {
+const db = new sqlite3.Database(db_path, (err) => {
     if (err){
         console.error(err.message);
     }
@@ -53,18 +57,27 @@ app.post('/insert', (req, res) => {
     });
 });
 
-// Endpoint to handle requests from the frontend
-app.post('/api/openai', async (req, res) => {
+app.post('/generate-response', async (req, res) => {
+    const { sys, user } = req.body;
+
     try {
-        const response = await axios.post('https://api.openai.com/v1/endpoint', req.body, {
+        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+            response_format: { type: 'json_object' },
+            messages: [
+                { role: 'system', content: sys },
+                { role: 'user', content: user }
+            ],
+            model: 'gpt-3.5-turbo'
+        }, {
             headers: {
-                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-                'Content-Type': 'application/json'
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
             }
         });
+
         res.json(response.data);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error('Error communicating with OpenAI API:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
