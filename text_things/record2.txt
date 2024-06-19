@@ -1,0 +1,1 @@
+.env is used to keep the api key secure

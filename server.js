@@ -3,9 +3,12 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
+const axios = require('axios');
 
 const app = express();
 const port = 3000;
+
+require('dotenv').config();
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -48,6 +51,21 @@ app.post('/insert', (req, res) => {
             res.status(200).send('Data inserted successfully');
         }
     });
+});
+
+// Endpoint to handle requests from the frontend
+app.post('/api/openai', async (req, res) => {
+    try {
+        const response = await axios.post('https://api.openai.com/v1/endpoint', req.body, {
+            headers: {
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        res.json(response.data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 app.listen(port, () => {
